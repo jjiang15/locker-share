@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Locker</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Locker">
+<meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #fff; --text: #1a1a1a; --muted: #777; --line: #e6e3dd;
+    --accent: #2f6fde; --free: #1f8a4c; --warn: #b7791f; --warn-bg: #fdf5e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151515; --card: #222; --text: #eee; --muted: #999; --line: #333;
+      --accent: #6b9cf0; --free: #4cc27e; --warn: #e8b04c; --warn-bg: #3a2f1a;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
+  }
+  main { max-width: 440px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  h1 { font-size: 28px; margin: 0; }
+  .icon-btn { background: none; border: 0; font-size: 22px; color: var(--muted); padding: 6px; cursor: pointer; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .code { font: 600 40px/1.1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .08em; margin: 4px 0 10px; }
+  .loc { font-size: 17px; }
+  .notes { color: var(--muted); font-size: 14px; margin-top: 4px; white-space: pre-wrap; }
+  .day-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .day-head h2 { font-size: 18px; margin: 0; }
+  .status { margin: 10px 0 12px; }
+  .free { color: var(--free); font-weight: 600; }
+  .row { display: flex; justify-content: space-between; padding: 4px 0; }
+  .row .meta { color: var(--muted); font-size: 14px; }
+  .heads-up { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 8px 10px; font-size: 14px; margin-bottom: 12px; }
+  .btns { display: flex; gap: 8px; }
+  button.b {
+    flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); font: inherit; font-weight: 600; cursor: pointer;
+  }
+  button.b.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.b:disabled { opacity: .5; }
+  .hl { outline: 2px solid var(--accent); }
+  .foot { text-align: center; margin-top: 8px; color: var(--muted); font-size: 14px; }
+  .foot button { background: none; border: 0; color: var(--accent); font: inherit; cursor: pointer; padding: 8px; }
+  .hidden { display: none !important; }
+  dialog { border: 0; border-radius: 16px; padding: 20px; width: min(92vw, 400px); background: var(--card); color: var(--text); }
+  dialog::backdrop { background: rgba(0,0,0,.4); }
+  dialog h3 { margin: 0 0 12px; }
+  dialog label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  dialog input, dialog textarea {
+    width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); font: inherit; font-size: 16px;
+  }
+  dialog .btns { margin-top: 16px; }
+  .err { color: #d33; font-size: 14px; margin-top: 8px; min-height: 1em; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Locker</h1>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+  </header>
+
+  <section class="card">
+    <div class="label">Code</div>
+    <div class="code" id="code">—</div>
+    <div class="label">Where</div>
+    <div class="loc" id="loc">Tap ⚙︎ to add locker details</div>
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <section class="card" id="card-today"></section>
+  <section class="card" id="card-tomorrow"></section>
+
+  <div class="foot">
+    <button id="notifyBtn" class="hidden">🔔 Turn on nightly reminders</button>
+    <div id="installTip" class="hidden">To get reminders: Share → <b>Add to Home Screen</b>, then open it from there.</div>
+    <div id="offline" class="hidden">Offline, showing last saved info</div>
+  </div>
+</main>
+
+<dialog id="setup">
+  <form method="dialog" id="setupForm">
+    <h3>Welcome</h3>
+    <label for="pinIn">App PIN</label>
+    <input id="pinIn" inputmode="numeric" autocomplete="off" required>
+    <label for="nameIn">Your name</label>
+    <input id="nameIn" autocomplete="given-name" required maxlength="30">
+    <div class="err" id="setupErr"></div>
+    <div class="btns"><button class="b primary" type="submit">Continue</button></div>
+  </form>
+</dialog>
+
+<dialog id="settings">
+  <form method="dialog" id="settingsForm">
+    <h3>Settings</h3>
+    <label for="sName">Your name</label>
+    <input id="sName" maxlength="30" required>
+    <label for="sCode">Locker code</label>
+    <input id="sCode" autocomplete="off">
+    <label for="sLoc">Where it is</label>
+    <input id="sLoc" placeholder="e.g. Huntsman Hall, 2nd floor, #214">
+    <label for="sNotes">Notes</label>
+    <textarea id="sNotes" rows="2"></textarea>
+    <div class="btns">
+      <button class="b" type="button" id="settingsCancel">Cancel</button>
+      <button class="b primary" type="submit">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const store = {
+  get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
+};
+let me = store.get('me');
+let pin = store.get('pin');
+let state = null;
+const focusDay = new URLSearchParams(location.search).get('day');
+
+async function api(path, body) {
+  const r = await fetch(path, {
+    method: body ? 'POST' : 'GET',
+    headers: { 'content-type': 'application/json', 'x-pin': pin || '' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (r.status === 401) throw Object.assign(new Error('Wrong PIN'), { auth: true });
+  if (!r.ok) throw new Error('Request failed');
+  return r.json();
+}
+
+function fmtDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function renderDay(day) {
+  const { date, list } = state[day];
+  const mine = list.find((r) => r.who === me);
+  const others = list.filter((r) => r.who !== me);
+  const el = $('card-' + day);
+  el.classList.toggle('hl', focusDay === day);
+
+  let status = list.length
+    ? list.map((r, i) => `<div class="row"><span>${r.who === me ? 'You' : esc(r.who)} · ${r.size}</span>
+        <span class="meta">${list.length > 1 ? (i === 0 ? '1st · ' : '2nd · ') : ''}${fmtTime(r.at)}</span></div>`).join('')
+    : '<span class="free">Free</span>';
+
+  let headsUp = '';
+  if (others.length && !mine) {
+    headsUp = `<div class="heads-up">${others.map((r) => esc(r.who)).join(', ')} already has it (${others.map((r) => r.size).join(', ')}). You can still add yourself.</div>`;
+  } else if (others.length && mine && others[0].at < mine.at) {
+    headsUp = `<div class="heads-up">${esc(others[0].who)} reserved first, so plan to share the space.</div>`;
+  }
+
+  const btns = mine
+    ? `<button class="b" data-act="reserve" data-size="${mine.size === 'Medium' ? 'Large' : 'Medium'}">Switch to ${mine.size === 'Medium' ? 'Large' : 'Medium'}</button>
+       <button class="b" data-act="cancel">Cancel</button>`
+    : `<button class="b primary" data-act="reserve" data-size="Medium">Medium</button>
+       <button class="b primary" data-act="reserve" data-size="Large">Large</button>`;
+
+  el.innerHTML = `
+    <div class="day-head"><h2>${day === 'today' ? 'Today' : 'Tomorrow'}</h2><span class="label">${fmtDate(date)}</span></div>
+    <div class="status">${status}</div>
+    ${headsUp}
+    <div class="btns">${btns}</div>`;
+  el.querySelectorAll('button').forEach((b) => b.onclick = () => act(day, b.dataset.act, b.dataset.size, el));
+}
+
+function render() {
+  if (!state) return;
+  const { code, location: loc, notes } = state.info;
+  $('code').textContent = code || '—';
+  $('loc').textContent = loc || 'Tap ⚙︎ to add locker details';
+  $('notes').textContent = notes || '';
+  renderDay('today');
+  renderDay('tomorrow');
+  updateNotifyUi();
+}
+
+async function load() {
+  try {
+    state = await api('/api/state');
+    store.set('state', JSON.stringify(state));
+    $('offline').classList.add('hidden');
+  } catch (e) {
+    if (e.auth) return showSetup('Wrong PIN');
+    const cached = store.get('state');
+    if (cached) { state = JSON.parse(cached); $('offline').classList.remove('hidden'); }
+  }
+  render();
+}
+
+async function act(day, action, size, el) {
+  el.querySelectorAll('button').forEach((b) => b.disabled = true);
+  try {
+    state = await api('/api/state', { action, day, size, who: me });
+    store.set('state', JSON.stringify(state));
+  } catch { alert('Could not save. Check your connection.'); }
+  render();
+}
+
+// --- setup & settings ---
+function showSetup(err = '') {
+  $('setupErr').textContent = err;
+  $('pinIn').value = pin || '';
+  $('nameIn').value = me || '';
+  $('setup').showModal();
+}
+$('setupForm').onsubmit = (e) => {
+  e.preventDefault();
+  pin = $('pinIn').value.trim();
+  me = $('nameIn').value.trim();
+  store.set('pin', pin); store.set('me', me);
+  $('setup').close();
+  load().then(syncPush);
+};
+
+$('settingsBtn').onclick = () => {
+  const i = state?.info || {};
+  $('sName').value = me || '';
+  $('sCode').value = i.code || '';
+  $('sLoc').value = i.location || '';
+  $('sNotes').value = i.notes || '';
+  $('settings').showModal();
+};
+$('settingsCancel').onclick = () => $('settings').close();
+$('settingsForm').onsubmit = async (e) => {
+  e.preventDefault();
+  me = $('sName').value.trim() || me;
+  store.set('me', me);
+  $('settings').close();
+  try {
+    state = await api('/api/state', { action: 'info', info: { code: $('sCode').value, location: $('sLoc').value, notes: $('sNotes').value } });
+    store.set('state', JSON.stringify(state));
+  } catch { alert('Could not save. Check your connection.'); }
+  render();
+  syncPush();
+};
+
+// --- push notifications ---
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const pushSupported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+
+function updateNotifyUi() {
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  $('installTip').classList.toggle('hidden', !(isIOS && !standalone));
+  $('notifyBtn').classList.toggle('hidden', !(pushSupported && state?.vapidKey && Notification.permission === 'default'));
+}
+
+function b64ToBytes(b64) {
+  const s = atob((b64 + '='.repeat((4 - b64.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(s, (c) => c.charCodeAt(0));
+}
+
+async function syncPush() {
+  if (!pushSupported || !state?.vapidKey || Notification.permission !== 'granted' || !me) return;
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.getSubscription()
+    || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(state.vapidKey) });
+  await api('/api/subscribe', { who: me, sub: sub.toJSON() }).catch(() => {});
+}
+
+$('notifyBtn').onclick = async () => {
+  const p = await Notification.requestPermission();
+  updateNotifyUi();
+  if (p === 'granted') syncPush();
+};
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+document.addEventListener('visibilitychange', () => { if (!document.hidden && me) load(); });
+
+if (!me) showSetup();
+else load().then(syncPush);
+</script>
+</body>
+</html>

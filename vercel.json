@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "public",
+  "crons": [
+    { "path": "/api/remind", "schedule": "0 0 * * 1-5" }
+  ]
+}
