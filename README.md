@@ -17,14 +17,16 @@ A tiny shared-locker PWA for two people. It shows the locker code and location, 
 4. **Add environment variables.** Run `npm run keys`, then go to Project → **Settings → Environment Variables** and add:
    - `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET` (from the script output)
    - `APP_PIN`: any PIN you share with your partner. It keeps the locker code private.
+   - `LOCKER_CODE`: the locker combination (kept out of the repo on purpose).
 5. **Redeploy:** `npx vercel --prod`
 
 ## On each iPhone (iOS 16.4 or later)
 
 1. Open the URL in **Safari** → Share → **Add to Home Screen**.
-2. Open the app **from the home-screen icon**, then enter the PIN and your name.
+2. Open the app **from the home-screen icon**, enter the PIN and tap your bear.
 3. Tap **Turn on nightly reminders** and allow notifications.
-4. Tap ⚙︎ once to enter the locker code and location (the two of you share them).
+
+The locker number and location are set in `api/state.js` (`LOCKER`).
 
 ## Tweaks
 

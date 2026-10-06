@@ -3,94 +3,149 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Locker</title>
+<title>Bear Locker</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Locker">
-<meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-title" content="Bear Locker">
+<meta name="theme-color" content="#fdf3e7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2a1f19" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f5f2; --card: #fff; --text: #1a1a1a; --muted: #777; --line: #e6e3dd;
-    --accent: #2f6fde; --free: #1f8a4c; --warn: #b7791f; --warn-bg: #fdf5e6;
+    --bg: #fdf3e7; --card: #fffaf3; --text: #5a3e2b; --muted: #a48670; --line: #f0dcc4;
+    --honey: #f5b95f; --honey-2: #f9d08b; --honey-ink: #6b3f12;
+    --pink: #ff8fb1; --blush: #ffe6ee; --blush-ink: #c2477a; --mint: #5fa86b;
+    --shadow: 0 6px 0 #f0dcc4;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #151515; --card: #222; --text: #eee; --muted: #999; --line: #333;
-      --accent: #6b9cf0; --free: #4cc27e; --warn: #e8b04c; --warn-bg: #3a2f1a;
+      --bg: #2a1f19; --card: #362820; --text: #f6e6d4; --muted: #b89b82; --line: #4a3628;
+      --honey: #e9a94e; --honey-2: #f2c071; --honey-ink: #3a220c;
+      --pink: #ff9eb8; --blush: #4a2b33; --blush-ink: #ffb3c9; --mint: #8fd08f;
+      --shadow: 0 6px 0 #1e1612;
     }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
+    font: 500 16px/1.4 Fredoka, ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+    padding: calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 28px);
   }
   main { max-width: 440px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  h1 { font-size: 28px; margin: 0; }
-  .icon-btn { background: none; border: 0; font-size: 22px; color: var(--muted); padding: 6px; cursor: pointer; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-  .label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-  .code { font: 600 40px/1.1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .08em; margin: 4px 0 10px; }
-  .loc { font-size: 17px; }
-  .notes { color: var(--muted); font-size: 14px; margin-top: 4px; white-space: pre-wrap; }
-  .day-head { display: flex; justify-content: space-between; align-items: baseline; }
-  .day-head h2 { font-size: 18px; margin: 0; }
-  .status { margin: 10px 0 12px; }
-  .free { color: var(--free); font-weight: 600; }
-  .row { display: flex; justify-content: space-between; padding: 4px 0; }
-  .row .meta { color: var(--muted); font-size: 14px; }
-  .heads-up { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 8px 10px; font-size: 14px; margin-bottom: 12px; }
-  .btns { display: flex; gap: 8px; }
+
+  /* header */
+  header { text-align: center; margin-bottom: 16px; }
+  .pair { display: flex; justify-content: center; align-items: flex-end; gap: 2px; }
+  .pair svg { width: 64px; height: 68px; }
+  .pair .heart { color: var(--pink); font-size: 22px; margin-bottom: 26px; animation: beat 1.6s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+  h1 { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
+  .hi { background: none; border: 0; color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; padding: 4px 10px; }
+  .hi u { text-decoration-style: dotted; text-underline-offset: 3px; }
+
+  /* cards */
+  .card {
+    background: var(--card); border: 2px solid var(--line); border-radius: 26px;
+    padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .honey {
+    background: linear-gradient(160deg, var(--honey-2), var(--honey)); border-color: transparent;
+    color: var(--honey-ink);
+  }
+  .paws { position: absolute; right: -6px; top: -6px; opacity: .18; width: 110px; pointer-events: none; }
+  .pill {
+    display: inline-block; background: rgba(255,255,255,.55); color: var(--honey-ink);
+    border-radius: 999px; padding: 3px 12px; font-size: 14px; font-weight: 600;
+  }
+  .label { font-size: 13px; font-weight: 600; letter-spacing: .04em; opacity: .75; margin-top: 12px; }
+  .code { font-size: 44px; font-weight: 700; letter-spacing: .06em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .loc { font-size: 16px; margin-top: 6px; }
+
+  .day-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .day-head h2 { font-size: 20px; font-weight: 700; margin: 0; }
+  .date { background: var(--bg); color: var(--muted); border-radius: 999px; padding: 3px 10px; font-size: 13px; }
+  .free { display: flex; align-items: center; gap: 8px; color: var(--mint); font-weight: 600; padding: 6px 0 12px; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .row .ava { width: 42px; height: 42px; border-radius: 50%; background: var(--bg); display: grid; place-items: center; flex: none; }
+  .row .ava svg { width: 36px; height: 38px; }
+  .row .txt { flex: 1; }
+  .row .sub { color: var(--muted); font-size: 13px; }
+  .badge { background: var(--honey-2); color: var(--honey-ink); border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 600; }
+  .heads-up {
+    background: var(--blush); color: var(--blush-ink); border-radius: 16px;
+    padding: 9px 12px; font-size: 14px; margin: 8px 0 4px;
+  }
+  .btns { display: flex; gap: 8px; margin-top: 8px; }
+  .q { font-size: 14px; font-weight: 600; color: var(--muted); margin-top: 14px; }
+  button.cancel {
+    display: block; margin: 10px auto 0; background: none; border: 0; color: var(--muted);
+    font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+  }
   button.b {
-    flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
-    background: var(--bg); color: var(--text); font: inherit; font-weight: 600; cursor: pointer;
+    flex: 1; padding: 13px 8px; border-radius: 999px; border: 2px solid var(--line);
+    background: var(--card); color: var(--text); font: inherit; font-weight: 600; font-size: 16px; cursor: pointer;
+    transition: transform .08s;
   }
-  button.b.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.b:active { transform: scale(.96); }
+  button.b.primary { background: var(--honey); border-color: var(--honey); color: var(--honey-ink); box-shadow: 0 4px 0 #d9913a; }
   button.b:disabled { opacity: .5; }
-  .hl { outline: 2px solid var(--accent); }
-  .foot { text-align: center; margin-top: 8px; color: var(--muted); font-size: 14px; }
-  .foot button { background: none; border: 0; color: var(--accent); font: inherit; cursor: pointer; padding: 8px; }
+  .hl { border-color: var(--honey); }
+
+  .foot { text-align: center; color: var(--muted); font-size: 14px; }
+  .foot button {
+    background: var(--blush); color: var(--blush-ink); border: 0; border-radius: 999px;
+    font: inherit; font-weight: 600; padding: 10px 18px; cursor: pointer;
+  }
+  .foot p { margin: 10px 0 0; }
   .hidden { display: none !important; }
-  dialog { border: 0; border-radius: 16px; padding: 20px; width: min(92vw, 400px); background: var(--card); color: var(--text); }
-  dialog::backdrop { background: rgba(0,0,0,.4); }
-  dialog h3 { margin: 0 0 12px; }
-  dialog label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
-  dialog input, dialog textarea {
-    width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--line);
-    background: var(--bg); color: var(--text); font: inherit; font-size: 16px;
+
+  /* dialog */
+  dialog {
+    border: 0; border-radius: 28px; padding: 22px; width: min(92vw, 400px);
+    background: var(--card); color: var(--text); text-align: center;
   }
-  dialog .btns { margin-top: 16px; }
-  .pick { display: flex; gap: 10px; }
+  dialog::backdrop { background: rgba(60,35,20,.45); }
+  dialog h3 { margin: 0 0 4px; font-size: 22px; }
+  dialog .sub { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+  dialog label { display: block; font-size: 14px; color: var(--muted); margin: 12px 0 6px; font-weight: 600; }
+  dialog input {
+    width: 100%; padding: 12px; border-radius: 16px; border: 2px solid var(--line); text-align: center;
+    background: var(--bg); color: var(--text); font: inherit; font-size: 20px; letter-spacing: .2em;
+  }
+  .pick { display: flex; gap: 12px; }
   .pick button {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 12px 6px; border-radius: 14px; border: 2px solid var(--line);
-    background: var(--bg); color: var(--text); font: inherit; font-weight: 600; cursor: pointer;
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 14px 6px 12px; border-radius: 22px; border: 2px solid var(--line);
+    background: var(--bg); color: var(--text); font: inherit; font-weight: 600; font-size: 17px; cursor: pointer;
+    transition: transform .1s;
   }
-  .pick button svg { width: 84px; height: 84px; }
-  .pick.small button svg { width: 48px; height: 48px; }
-  .pick button.on { border-color: var(--accent); }
-  .row .who { display: flex; align-items: center; gap: 8px; }
-  .row .who svg { width: 28px; height: 28px; flex: none; }
-  .err { color: #d33; font-size: 14px; margin-top: 8px; min-height: 1em; }
+  .pick button:active { transform: scale(.95); }
+  .pick button svg { width: 86px; height: 92px; }
+  .pick button.on { border-color: var(--honey); }
+  .err { color: var(--blush-ink); font-size: 14px; margin-top: 10px; min-height: 1.2em; }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1>Locker</h1>
-    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+    <div class="pair" id="pair"></div>
+    <h1>Our Little Locker</h1>
+    <button class="hi hidden" id="hiBtn"></button>
   </header>
 
-  <section class="card">
-    <div class="label">Code</div>
+  <section class="card honey">
+    <svg class="paws" viewBox="0 0 100 100" aria-hidden="true" fill="currentColor">
+      <g id="paw"><ellipse cx="30" cy="40" rx="11" ry="9"/><circle cx="17" cy="27" r="5"/><circle cx="25" cy="20" r="5"/><circle cx="35" cy="20" r="5"/><circle cx="43" cy="27" r="5"/></g>
+      <use href="#paw" x="40" y="35"/>
+    </svg>
+    <span class="pill" id="num">Locker</span>
+    <div class="label">COMBINATION</div>
     <div class="code" id="code">—</div>
-    <div class="label">Where</div>
-    <div class="loc" id="loc">Tap ⚙︎ to add locker details</div>
-    <div class="notes" id="notes"></div>
+    <div class="loc" id="loc"></div>
   </section>
 
   <section class="card" id="card-today"></section>
@@ -98,37 +153,20 @@
 
   <div class="foot">
     <button id="notifyBtn" class="hidden">🔔 Turn on nightly reminders</button>
-    <div id="installTip" class="hidden">To get reminders: Share → <b>Add to Home Screen</b>, then open it from there.</div>
-    <div id="offline" class="hidden">Offline, showing last saved info</div>
+    <p id="installTip" class="hidden">For reminders: Share → <b>Add to Home Screen</b>, then open it from there 🐾</p>
+    <p id="offline" class="hidden">Offline, showing last saved info</p>
   </div>
 </main>
 
 <dialog id="setup">
   <form method="dialog" id="setupForm">
-    <h3>Welcome</h3>
+    <h3>Welcome! 🍯</h3>
+    <div class="sub">Our shared locker at Huntsman</div>
     <label for="pinIn">App PIN</label>
-    <input id="pinIn" inputmode="numeric" autocomplete="off" required>
-    <label>Who are you?</label>
+    <input id="pinIn" inputmode="numeric" autocomplete="off">
+    <label>Which bear are you?</label>
     <div class="pick" id="setupPick"></div>
     <div class="err" id="setupErr"></div>
-  </form>
-</dialog>
-
-<dialog id="settings">
-  <form method="dialog" id="settingsForm">
-    <h3>Settings</h3>
-    <label>You are</label>
-    <div class="pick small" id="settingsPick"></div>
-    <label for="sCode">Locker code</label>
-    <input id="sCode" autocomplete="off">
-    <label for="sLoc">Where it is</label>
-    <input id="sLoc" placeholder="e.g. Huntsman Hall, 2nd floor, #214">
-    <label for="sNotes">Notes</label>
-    <textarea id="sNotes" rows="2"></textarea>
-    <div class="btns">
-      <button class="b" type="button" id="settingsCancel">Cancel</button>
-      <button class="b primary" type="submit">Save</button>
-    </div>
   </form>
 </dialog>
 
@@ -139,20 +177,21 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
 };
 const PEOPLE = ['Janna Jiang', 'David Zhang'];
+const first = (who) => who.split(' ')[0];
 
 function bear(who) {
   const janna = who === 'Janna Jiang';
-  const fur = janna ? '#e3ab72' : '#a46a3c';
-  const light = janna ? '#f8dfc4' : '#e4c29b';
+  const fur = janna ? '#e9b27a' : '#a46a3c';
+  const light = janna ? '#f9e1c6' : '#e4c29b';
   const dark = '#3b2a20';
   const extra = janna
-    // pink bow on the right ear + eyelashes
-    ? `<path d="M67 6 L81 15 L67 24 Z M95 6 L81 15 L95 24 Z" fill="#ff7eb0"/>
+    // pink bow + eyelashes
+    ? `<path d="M67 6 L81 15 L67 24 Z M95 6 L81 15 L95 24 Z" fill="#ff8fb1"/>
        <circle cx="81" cy="15" r="4" fill="#ff5a99"/>
        <path d="M31 45 l-3 -3 M35 44 l-1 -4 M65 44 l1 -4 M69 45 l3 -3" stroke="${dark}" stroke-width="1.6" stroke-linecap="round"/>`
     // blue bow tie
-    : `<path d="M50 94 L36 86 L36 102 Z M50 94 L64 86 L64 102 Z" fill="#4a7bd0"/>
-       <circle cx="50" cy="94" r="4" fill="#2f5fb3"/>`;
+    : `<path d="M50 94 L36 86 L36 102 Z M50 94 L64 86 L64 102 Z" fill="#5b8ee0"/>
+       <circle cx="50" cy="94" r="4" fill="#3a6cc4"/>`;
   return `<svg viewBox="0 0 100 106" aria-hidden="true">
     <circle cx="24" cy="26" r="14" fill="${fur}"/><circle cx="76" cy="26" r="14" fill="${fur}"/>
     <circle cx="24" cy="26" r="7" fill="${light}"/><circle cx="76" cy="26" r="7" fill="${light}"/>
@@ -168,11 +207,7 @@ function bear(who) {
   </svg>`;
 }
 
-function renderPick(el, selected, onPick) {
-  el.innerHTML = PEOPLE.map((p) =>
-    `<button type="button" data-who="${p}" class="${p === selected ? 'on' : ''}">${bear(p)}<span>${p.split(' ')[0]}</span></button>`).join('');
-  el.querySelectorAll('button').forEach((b) => b.onclick = () => onPick(b.dataset.who));
-}
+$('pair').innerHTML = bear('Janna Jiang') + '<span class="heart">♥</span>' + bear('David Zhang');
 
 let me = store.get('me');
 if (me && !PEOPLE.includes(me)) me = null;
@@ -195,10 +230,9 @@ function fmtDate(iso) {
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
-function fmtTime(ts) {
-  return new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-}
+const fmtTime = (ts) => new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const nth = (i) => ['1st', '2nd', '3rd'][i] ?? `${i + 1}th`;
 
 function renderDay(day) {
   const { date, list } = state[day];
@@ -207,38 +241,50 @@ function renderDay(day) {
   const el = $('card-' + day);
   el.classList.toggle('hl', focusDay === day);
 
-  let status = list.length
-    ? list.map((r, i) => `<div class="row"><span class="who">${PEOPLE.includes(r.who) ? bear(r.who) : ''}${r.who === me ? 'You' : esc(r.who.split(' ')[0])} · ${r.size}</span>
-        <span class="meta">${list.length > 1 ? (['1st', '2nd', '3rd'][i] ?? `${i + 1}th`) + ' · ' : ''}${fmtTime(r.at)}</span></div>`).join('')
-    : '<span class="free">Free</span>';
+  const rows = list.length
+    ? list.map((r, i) => `<div class="row">
+        <div class="ava">${PEOPLE.includes(r.who) ? bear(r.who) : '🐻'}</div>
+        <div class="txt">${r.who === me ? 'You' : esc(first(r.who))} · ${r.size}
+          <div class="sub">since ${fmtTime(r.at)}</div></div>
+        ${list.length > 1 ? `<span class="badge">${nth(i)}</span>` : ''}
+      </div>`).join('')
+    : '<div class="free">🍯 Free, all yours!</div>';
 
   let headsUp = '';
   if (others.length && !mine) {
-    headsUp = `<div class="heads-up">${others.map((r) => esc(r.who.split(' ')[0])).join(', ')} already has it (${others.map((r) => r.size).join(', ')}). You can still add yourself.</div>`;
+    headsUp = `<div class="heads-up">🐾 ${others.map((r) => esc(first(r.who))).join(' & ')} already has it (${others.map((r) => r.size).join(', ')}). You can still squeeze in!</div>`;
   } else if (others.length && mine && others[0].at < mine.at) {
-    headsUp = `<div class="heads-up">${esc(others[0].who.split(' ')[0])} reserved first, so plan to share the space.</div>`;
+    headsUp = `<div class="heads-up">🐾 ${esc(first(others[0].who))} got there first, so share nicely!</div>`;
   }
 
-  const btns = mine
-    ? `<button class="b" data-act="reserve" data-size="${mine.size === 'Medium' ? 'Large' : 'Medium'}">Switch to ${mine.size === 'Medium' ? 'Large' : 'Medium'}</button>
-       <button class="b" data-act="cancel">Cancel</button>`
-    : `<button class="b primary" data-act="reserve" data-size="Medium">Medium</button>
-       <button class="b primary" data-act="reserve" data-size="Large">Large</button>`;
+  const sizes = ['Small', 'Medium', 'Large'].map((s) => {
+    const cls = !mine ? 'primary' : s === mine.size ? 'primary' : '';
+    return `<button class="b ${cls}" data-act="reserve" data-size="${s}">${s}</button>`;
+  }).join('');
+  const btns = `<div class="q">What size item are you storing?</div>
+    <div class="btns">${sizes}</div>
+    ${mine ? '<button class="cancel" data-act="cancel">Cancel my spot</button>' : ''}`;
 
   el.innerHTML = `
-    <div class="day-head"><h2>${day === 'today' ? 'Today' : 'Tomorrow'}</h2><span class="label">${fmtDate(date)}</span></div>
-    <div class="status">${status}</div>
-    ${headsUp}
-    <div class="btns">${btns}</div>`;
-  el.querySelectorAll('button').forEach((b) => b.onclick = () => act(day, b.dataset.act, b.dataset.size, el));
+    <div class="day-head"><h2>${day === 'today' ? '☀️ Today' : '🌙 Tomorrow'}</h2><span class="date">${fmtDate(date)}</span></div>
+    ${rows}${headsUp}
+    ${btns}`;
+  el.querySelectorAll('button').forEach((b) => b.onclick = () => {
+    if (mine && b.dataset.size === mine.size) return;
+    act(day, b.dataset.act, b.dataset.size, el);
+  });
 }
 
 function render() {
+  if (me) {
+    $('hiBtn').innerHTML = `Hi ${first(me)}! <u>Not you?</u>`;
+    $('hiBtn').classList.remove('hidden');
+  }
   if (!state) return;
-  const { code, location: loc, notes } = state.info;
+  const { number, code, location: loc } = state.info;
+  $('num').textContent = `Locker #${number}`;
   $('code').textContent = code || '—';
-  $('loc').textContent = loc || 'Tap ⚙︎ to add locker details';
-  $('notes').textContent = notes || '';
+  $('loc').textContent = '📍 ' + loc;
   renderDay('today');
   renderDay('tomorrow');
   updateNotifyUi();
@@ -250,7 +296,7 @@ async function load() {
     store.set('state', JSON.stringify(state));
     $('offline').classList.add('hidden');
   } catch (e) {
-    if (e.auth) return showSetup('Wrong PIN');
+    if (e.auth) return showSetup('Hmm, wrong PIN 🐻');
     const cached = store.get('state');
     if (cached) { state = JSON.parse(cached); $('offline').classList.remove('hidden'); }
   }
@@ -266,14 +312,17 @@ async function act(day, action, size, el) {
   render();
 }
 
-// --- setup & settings ---
+// --- setup / switch bear ---
 function showSetup(err = '') {
   $('setupErr').textContent = err;
   $('pinIn').value = pin || '';
-  renderPick($('setupPick'), me, (who) => {
-    if (!$('pinIn').value.trim()) { $('setupErr').textContent = 'Enter the PIN first'; return; }
+  const pick = $('setupPick');
+  pick.innerHTML = PEOPLE.map((p) =>
+    `<button type="button" data-who="${p}" class="${p === me ? 'on' : ''}">${bear(p)}<span>${first(p)}</span></button>`).join('');
+  pick.querySelectorAll('button').forEach((b) => b.onclick = () => {
+    if (!$('pinIn').value.trim()) { $('setupErr').textContent = 'Enter the PIN first 🐾'; return; }
     pin = $('pinIn').value.trim();
-    me = who;
+    me = b.dataset.who;
     store.set('pin', pin); store.set('me', me);
     $('setup').close();
     load().then(syncPush);
@@ -281,31 +330,7 @@ function showSetup(err = '') {
   $('setup').showModal();
 }
 $('setupForm').onsubmit = (e) => e.preventDefault();
-
-let pickedMe = me;
-$('settingsBtn').onclick = () => {
-  const i = state?.info || {};
-  pickedMe = me;
-  const draw = () => renderPick($('settingsPick'), pickedMe, (who) => { pickedMe = who; draw(); });
-  draw();
-  $('sCode').value = i.code || '';
-  $('sLoc').value = i.location || '';
-  $('sNotes').value = i.notes || '';
-  $('settings').showModal();
-};
-$('settingsCancel').onclick = () => $('settings').close();
-$('settingsForm').onsubmit = async (e) => {
-  e.preventDefault();
-  me = pickedMe || me;
-  store.set('me', me);
-  $('settings').close();
-  try {
-    state = await api('/api/state', { action: 'info', info: { code: $('sCode').value, location: $('sLoc').value, notes: $('sNotes').value } });
-    store.set('state', JSON.stringify(state));
-  } catch { alert('Could not save. Check your connection.'); }
-  render();
-  syncPush();
-};
+$('hiBtn').onclick = () => showSetup();
 
 // --- push notifications ---
 const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;

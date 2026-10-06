@@ -6,12 +6,12 @@ export default async function handler(req, res) {
   if (secret && req.headers.authorization !== `Bearer ${secret}`) return res.status(401).end();
 
   const list = await get('res:' + dayKey(1), []);
-  const taken = list.map((r) => `${r.who} (${r.size})`).join(', ');
+  const taken = list.map((r) => `${r.who.split(' ')[0]} (${r.size})`).join(', ');
   await notify((s) => !list.some((r) => r.who === s.who), {
-    title: 'Locker tomorrow?',
+    title: '🐻 Locker tomorrow?',
     body: taken
       ? `${taken} already reserved. Need it too? Tap to add yourself.`
-      : 'Need the locker tomorrow? Tap to reserve Medium or Large.',
+      : 'Need the locker tomorrow? Tap to reserve a spot.',
     url: '/?day=tomorrow',
   });
   res.json({ ok: true });
