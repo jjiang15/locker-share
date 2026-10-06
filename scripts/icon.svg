@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- sky, sun, clouds -->
+  <rect width="100" height="100" fill="#bfe4f6"/>
+  <circle cx="12" cy="12" r="7" fill="#ffd36b"/>
+  <g fill="#fff"><circle cx="38" cy="14" r="4"/><circle cx="43" cy="12" r="5"/><circle cx="48" cy="14" r="4"/><rect x="38" y="14" width="10" height="4"/></g>
+
+  <!-- ground + path -->
+  <rect y="80" width="100" height="20" fill="#9fd37f"/>
+  <path d="M40 100 Q52 88 76 80 L84 80 Q64 90 58 100 Z" fill="#f3dfb5"/>
+
+  <!-- schoolhouse -->
+  <rect x="73" y="24" width="8" height="10" fill="#f6efe2"/>
+  <path d="M71 24 L77 18 L83 24 Z" fill="#8c4a3a"/>
+  <circle cx="77" cy="29" r="2.2" fill="#ffcf4a"/>
+  <rect x="62" y="44" width="30" height="36" fill="#e9786e"/>
+  <path d="M58 46 L77 30 L96 46 Z" fill="#8c4a3a"/>
+  <circle cx="77" cy="40" r="3.6" fill="#fff"/>
+  <path d="M77 38 V40 H78.6" stroke="#8c4a3a" stroke-width=".8" fill="none" stroke-linecap="round"/>
+  <rect x="65" y="50" width="7" height="7" rx="1" fill="#cdeefc"/>
+  <rect x="82" y="50" width="7" height="7" rx="1" fill="#cdeefc"/>
+  <path d="M73 80 V68 Q77 63 81 68 V80 Z" fill="#8c4a3a"/>
+
+  <!-- bear: backpack behind body -->
+  <rect x="17" y="57" width="36" height="28" rx="9" fill="#5b8ee0"/>
+  <rect x="17" y="57" width="36" height="7" rx="3.5" fill="#7aa6ec"/>
+  <!-- feet -->
+  <ellipse cx="28" cy="90" rx="6" ry="4" fill="#8f5a31"/>
+  <ellipse cx="43" cy="90" rx="6" ry="4" fill="#8f5a31"/>
+  <!-- body -->
+  <ellipse cx="35" cy="76" rx="14" ry="14" fill="#a46a3c"/>
+  <ellipse cx="35" cy="80" rx="8" ry="8" fill="#e4c29b"/>
+  <!-- straps -->
+  <rect x="25" y="64" width="4" height="20" rx="2" fill="#3a6cc4"/>
+  <rect x="41" y="64" width="4" height="20" rx="2" fill="#3a6cc4"/>
+  <!-- waving arm -->
+  <ellipse cx="52" cy="62" rx="4.5" ry="8" transform="rotate(35 52 62)" fill="#a46a3c"/>
+  <!-- head -->
+  <circle cx="22" cy="31" r="7" fill="#a46a3c"/><circle cx="48" cy="31" r="7" fill="#a46a3c"/>
+  <circle cx="22" cy="31" r="3.5" fill="#e4c29b"/><circle cx="48" cy="31" r="3.5" fill="#e4c29b"/>
+  <circle cx="35" cy="46" r="18" fill="#a46a3c"/>
+  <ellipse cx="35" cy="53" rx="9" ry="7" fill="#e4c29b"/>
+  <circle cx="28" cy="43" r="2.6" fill="#3b2a20"/><circle cx="42" cy="43" r="2.6" fill="#3b2a20"/>
+  <circle cx="28.9" cy="42.1" r=".9" fill="#fff"/><circle cx="42.9" cy="42.1" r=".9" fill="#fff"/>
+  <ellipse cx="23" cy="51" rx="3.4" ry="2.2" fill="#ff8fa8" opacity=".6"/>
+  <ellipse cx="47" cy="51" rx="3.4" ry="2.2" fill="#ff8fa8" opacity=".6"/>
+  <ellipse cx="35" cy="50" rx="3.3" ry="2.5" fill="#3b2a20"/>
+  <path d="M31.5 54.5 Q35 58 38.5 54.5" stroke="#3b2a20" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>
